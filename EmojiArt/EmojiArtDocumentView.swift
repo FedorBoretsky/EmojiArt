@@ -10,7 +10,7 @@ import SwiftUI
 
 struct EmojiArtDocumentView: View {
     @ObservedObject var document: EmojiArtDocument
-        
+    
     var body: some View {
         VStack {
             
@@ -36,7 +36,7 @@ struct EmojiArtDocumentView: View {
                             .scaleEffect(self.zoomScale)
                             .offset(self.panOffset)
                     )
-                        .gesture(self.doubleTapToZoom(in: geometry.size))
+                    .gesture(self.doubleTapToZoom(in: geometry.size))
                     
                     // Emojis
                     ForEach(self.document.emojis) { emoji in
@@ -44,6 +44,7 @@ struct EmojiArtDocumentView: View {
                                   size: emoji.fontSize * self.zoomScale,
                                   isSelected: isEmojiSelected(emoji))
                             .position(self.position(for: emoji, in: geometry.size))
+                            .gesture(selectGesture(emoji: emoji))
                     }
                     
                 }
@@ -69,9 +70,24 @@ struct EmojiArtDocumentView: View {
     // MARK: - Selection
     
     @State private var selectedEmojis: Set<EmojiArt.Emoji> = Set()
-
+    
     func isEmojiSelected(_ emoji: EmojiArt.Emoji) -> Bool {
-        return true
+        return selectedEmojis.contains(emoji)
+    }
+    
+    func toggleSelection(emoji: EmojiArt.Emoji) {
+        if selectedEmojis.contains(emoji) {
+            selectedEmojis.remove(emoji)
+        } else {
+            selectedEmojis.insert(emoji)
+        }
+    }
+    
+    private func selectGesture(emoji: EmojiArt.Emoji) -> some Gesture {
+        TapGesture()
+            .onEnded{
+                toggleSelection(emoji: emoji)
+            }
     }
     
     // MARK: -
@@ -104,12 +120,12 @@ struct EmojiArtDocumentView: View {
         DragGesture()
             .updating($gesturePanOffset) { latestDragGestureValue, gesturePanOffset, transaction in
                 gesturePanOffset = latestDragGestureValue.translation / self.zoomScale
-        }
-        .onEnded { finalDragGestureValue in
-            self.steadyStatePanOffset = self.steadyStatePanOffset + (finalDragGestureValue.translation / self.zoomScale)
-        }
+            }
+            .onEnded { finalDragGestureValue in
+                self.steadyStatePanOffset = self.steadyStatePanOffset + (finalDragGestureValue.translation / self.zoomScale)
+            }
     }
-
+    
     
     private func doubleTapToZoom(in size: CGSize) -> some Gesture {
         TapGesture(count: 2)
@@ -128,7 +144,7 @@ struct EmojiArtDocumentView: View {
             self.steadyStateZoomScale = min(hZoom, vZoom)
         }
     }
-        
+    
     private func position(for emoji: EmojiArt.Emoji, in size: CGSize) -> CGPoint {
         var location = emoji.location
         location = CGPoint(x: location.x * zoomScale, y: location.y * zoomScale)
