@@ -25,8 +25,15 @@ fileprivate struct EmojiSelection: View {
     var body: some View {
         let shape = Circle()
         ZStack{
+            // Dargen background
             shape.scale(1.66).foregroundColor(.black).opacity(0.4)
+            // Size rorder
             shape.stroke(lineWidth: 2).foregroundColor(.white)
+            // "Resize handle"
+            shape.scale(1.18)
+                .stroke(lineWidth: 2)
+                .foregroundColor(.white)
+                .clipShape(Rectangle())
         }
     }
 }
@@ -41,7 +48,7 @@ struct EmojiView_Previews: PreviewProvider {
                 bg.edgesIgnoringSafeArea(.all)
             }
             VStack(spacing: 22) {
-                EmojiView(text: "🔔", size: 10, isSelected: true)
+                EmojiView(text: "🔔", size: 10, isSelected: false)
                 EmojiView(text: "⬆️", size: 40, isSelected: true)
                 EmojiView(text: "🔔", size: 40, isSelected: false)
                 EmojiView(text: "♥️", size: 20, isSelected: true)
