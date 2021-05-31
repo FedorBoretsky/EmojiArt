@@ -37,7 +37,7 @@ struct EmojiArtDocumentView: View {
                             .offset(self.panOffset)
                     )
                     .gesture(self.doubleTapToZoom(in: geometry.size))
-                    .gesture(self.deselectAllEmojisGesture())
+                    .gesture(self.singleTapToDeselectAllEmojis())
                     
                     // Emojis over image
                     ForEach(self.document.emojis) { emoji in
@@ -45,7 +45,7 @@ struct EmojiArtDocumentView: View {
                                   size: emoji.fontSize * self.zoomScale,
                                   isSelected: isEmojiSelected(emoji))
                             .position(self.position(for: emoji, in: geometry.size))
-                            .gesture(selectGestureForEmoji(emoji))
+                            .gesture(singleTapToSelectDeselectEmoji(emoji))
                     }
                     
                 }
@@ -84,14 +84,14 @@ struct EmojiArtDocumentView: View {
         }
     }
     
-    private func selectGestureForEmoji(_ emoji: EmojiArt.Emoji) -> some Gesture {
+    private func singleTapToSelectDeselectEmoji(_ emoji: EmojiArt.Emoji) -> some Gesture {
         TapGesture()
             .onEnded{
                 toggleSelection(emoji: emoji)
             }
     }
     
-    private func deselectAllEmojisGesture() -> some Gesture {
+    private func singleTapToDeselectAllEmojis() -> some Gesture {
         TapGesture()
             .onEnded{
                 selectedEmojis.removeAll()
