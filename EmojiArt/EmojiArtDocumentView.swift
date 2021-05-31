@@ -19,7 +19,7 @@ struct EmojiArtDocumentView: View {
                 HStack {
                     ForEach(EmojiArtDocument.palette.map { String($0) }, id: \.self) { emoji in
                         Text(emoji)
-                            .font(Font.system(size: self.defaultEmojiSize))
+                            .font(Font.system(size: UX.Sizes.defaultEmoji))
                             .onDrag { NSItemProvider(object: emoji as NSString) }
                     }
                 }
@@ -167,11 +167,10 @@ struct EmojiArtDocumentView: View {
         }
         if !found {
             found = providers.loadObjects(ofType: String.self) { string in
-                self.document.addEmoji(string, at: location, size: self.defaultEmojiSize)
+                self.document.addEmoji(string, at: location, size: UX.Sizes.defaultEmoji)
             }
         }
         return found
     }
     
-    private let defaultEmojiSize: CGFloat = 40
 }

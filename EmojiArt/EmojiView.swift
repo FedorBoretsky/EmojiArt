@@ -26,7 +26,7 @@ fileprivate struct EmojiSelection: View {
         let shape = Circle()
         ZStack{
             // Dargen background
-            shape.scale(1.66).foregroundColor(.black).opacity(0.4)
+            shape.scale(1.66).foregroundColor(UX.Colors.selectionDarkBackground)
             // Size rorder
             shape.stroke(lineWidth: 2).foregroundColor(.white)
             // "Resize handle"

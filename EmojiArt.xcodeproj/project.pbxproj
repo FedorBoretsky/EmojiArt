@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		9F4EF99E2664EBDC00BD5FEC /* UX.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F4EF99D2664EBDC00BD5FEC /* UX.swift */; };
 		9FB4D6AA2662E38D0042E375 /* EmojiView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FB4D6A92662E38D0042E375 /* EmojiView.swift */; };
 		EC6BD6D324579CB100DC5EE0 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC6BD6D224579CB100DC5EE0 /* AppDelegate.swift */; };
 		EC6BD6D524579CB100DC5EE0 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC6BD6D424579CB100DC5EE0 /* SceneDelegate.swift */; };
@@ -22,6 +23,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		9F4EF99D2664EBDC00BD5FEC /* UX.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UX.swift; sourceTree = "<group>"; };
 		9FB4D6A92662E38D0042E375 /* EmojiView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmojiView.swift; sourceTree = "<group>"; };
 		EC6BD6CF24579CB100DC5EE0 /* EmojiArt.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = EmojiArt.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		EC6BD6D224579CB100DC5EE0 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -71,6 +73,7 @@
 				EC6BD6E82457A09400DC5EE0 /* EmojiArt.swift */,
 				EC6BD6E624579CE000DC5EE0 /* EmojiArtDocument.swift */,
 				EC6BD6D624579CB100DC5EE0 /* EmojiArtDocumentView.swift */,
+				9F4EF99D2664EBDC00BD5FEC /* UX.swift */,
 				9FB4D6A92662E38D0042E375 /* EmojiView.swift */,
 				EC6BD6F2245A48D100DC5EE0 /* OptionalImage.swift */,
 				EC6BD6F4245A48D100DC5EE0 /* AnimatableSystemFontModifier.swift */,
@@ -172,6 +175,7 @@
 				EC6BD6D724579CB100DC5EE0 /* EmojiArtDocumentView.swift in Sources */,
 				EC6BD6F3245A48D100DC5EE0 /* OptionalImage.swift in Sources */,
 				EC6BD6F5245A48D100DC5EE0 /* AnimatableSystemFontModifier.swift in Sources */,
+				9F4EF99E2664EBDC00BD5FEC /* UX.swift in Sources */,
 				EC6BD6E724579CE000DC5EE0 /* EmojiArtDocument.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
