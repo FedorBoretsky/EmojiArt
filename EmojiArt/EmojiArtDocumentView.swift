@@ -36,16 +36,17 @@ struct EmojiArtDocumentView: View {
                             .scaleEffect(self.zoomScale)
                             .offset(self.panOffset)
                     )
-                    .gesture(self.doubleTapToZoom(in: geometry.size))
                     .gesture(self.singleTapToDeselectAllEmojis())
+                    .highPriorityGesture(self.doubleTapToZoom(in: geometry.size))
                     
                     // Emojis over image
                     ForEach(self.document.emojis) { emoji in
                         EmojiView(text: emoji.text,
                                   size: emoji.fontSize * self.zoomScale,
                                   isSelected: isEmojiSelected(emoji))
-                            .position(self.position(for: emoji, in: geometry.size))
+                            .position(self.getPosition(for: emoji, in: geometry.size))
                             .gesture(singleTapToSelectDeselectEmoji(emoji))
+                            .highPriorityGesture(dragToMoveEmoji(emoji, in: geometry.size))
                     }
                     
                 }
@@ -98,7 +99,51 @@ struct EmojiArtDocumentView: View {
             }
     }
     
-    // MARK: -
+    // MARK: - Move emojis
+    
+    @GestureState private var previousTranslationOfDraggingEmoji: CGSize = .zero
+        
+    private func dragToMoveEmoji(_ emoji: EmojiArt.Emoji, in size: CGSize) -> some Gesture {
+        DragGesture()
+            .updating($previousTranslationOfDraggingEmoji){ dragValue, previousTranslationOfDraggingEmoji, transaction in
+                
+                // Calculate offset for current episode of the dragging.
+
+                let newOffset = CGSize(width:  dragValue.translation.width - previousTranslationOfDraggingEmoji.width,
+                                       height: dragValue.translation.height - previousTranslationOfDraggingEmoji.height)
+                
+                // Move emoji
+                if selectedEmojis.contains(emoji) {
+                    for selectedEmoji in selectedEmojis {
+                        movePosition(for: selectedEmoji, in: size, by: newOffset)
+                    }
+                } else {
+                    movePosition(for: emoji, in: size, by: newOffset)
+                }
+                
+                // Save current translation value for calculation in the next episode.
+                previousTranslationOfDraggingEmoji = dragValue.translation
+            }
+    }
+    
+    // MARK: - Postion of emoji
+    
+    
+    private func getPosition(for emoji: EmojiArt.Emoji, in size: CGSize) -> CGPoint {
+        var location = emoji.location
+        location = CGPoint(x: location.x * zoomScale, y: location.y * zoomScale)
+        location = CGPoint(x: location.x + size.width/2, y: location.y + size.height/2)
+        location = CGPoint(x: location.x + panOffset.width, y: location.y + panOffset.height)
+        return location
+    }
+    
+    private func movePosition(for emoji: EmojiArt.Emoji, in size: CGSize, by offset: CGSize){
+        let documentOffset = CGSize(width: offset.width / zoomScale, height: offset.height / zoomScale)
+        document.moveEmoji(emoji, by: documentOffset)
+    }
+    
+
+    // MARK: - Zoom
     
     @State private var steadyStateZoomScale: CGFloat = 1.0
     @GestureState private var gestureZoomScale: CGFloat = 1.0
@@ -116,6 +161,8 @@ struct EmojiArtDocumentView: View {
                 self.steadyStateZoomScale *= finalGestureScale
             }
     }
+    
+    // MARK: - Pan
     
     @State private var steadyStatePanOffset: CGSize = .zero
     @GestureState private var gesturePanOffset: CGSize = .zero
@@ -153,13 +200,6 @@ struct EmojiArtDocumentView: View {
         }
     }
     
-    private func position(for emoji: EmojiArt.Emoji, in size: CGSize) -> CGPoint {
-        var location = emoji.location
-        location = CGPoint(x: location.x * zoomScale, y: location.y * zoomScale)
-        location = CGPoint(x: location.x + size.width/2, y: location.y + size.height/2)
-        location = CGPoint(x: location.x + panOffset.width, y: location.y + panOffset.height)
-        return location
-    }
     
     private func drop(providers: [NSItemProvider], at location: CGPoint) -> Bool {
         var found = providers.loadFirstObject(ofType: URL.self) { url in
