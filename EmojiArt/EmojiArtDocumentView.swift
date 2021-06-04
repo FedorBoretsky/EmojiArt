@@ -8,6 +8,9 @@
 
 import SwiftUI
 
+
+
+
 struct EmojiArtDocumentView: View {
     @ObservedObject var document: EmojiArtDocument
     
@@ -24,8 +27,9 @@ struct EmojiArtDocumentView: View {
                     }
                 }
             }
+            .zIndex(1)
             .padding(.horizontal)
-            
+                        
             // Canvas – Start
             GeometryReader { geometry in
                 ZStack {
@@ -47,7 +51,21 @@ struct EmojiArtDocumentView: View {
                             .position(self.getPosition(for: emoji, in: geometry.size))
                             .gesture(dragToMoveEmoji(emoji, in: geometry.size))
                             .gesture(singleTapToSelectDeselectEmoji(emoji))
-
+                        
+                    }
+                    
+                    // Button for Deleting emoji
+                    if !selectedEmojis.isEmpty {
+                        VStack{
+                            Spacer()
+                            HStack(spacing: 33){
+                                Spacer()
+                                deleteSelectedEmojiButton.semiblackButtonStyle()
+                                deleteAllEmojiButton.semiblackButtonStyle()
+                                Spacer()
+                            }
+                        }
+                        .padding(.bottom, 33)
                     }
                     
                 }
@@ -128,7 +146,7 @@ struct EmojiArtDocumentView: View {
     // MARK: - Move emojis
     
     @GestureState private var previousTranslationOfDraggingEmoji: CGSize = .zero
-        
+    
     private func dragToMoveEmoji(_ touchedEmoji: EmojiArt.Emoji, in size: CGSize) -> some Gesture {
         DragGesture()
             .updating($previousTranslationOfDraggingEmoji){ dragValue, previousTranslationOfDraggingEmoji, transaction in
@@ -170,16 +188,16 @@ struct EmojiArtDocumentView: View {
         document.moveEmoji(emoji, by: documentOffset)
     }
     
-
+    
     // MARK: - Zooming whole art
     
     @State private var steadyStateZoomScale: CGFloat = 1.0
     @GestureState private var gestureZoomScale: CGFloat = 1.0
     
     private var wholeArtZoomScale: CGFloat {
-            return steadyStateZoomScale * gestureZoomScale
+        return steadyStateZoomScale * gestureZoomScale
     }
-
+    
     private func zoomWholeArtGesture() -> some Gesture {
         MagnificationGesture()
             .updating($gestureZoomScale) { latestGestureScale, gestureZoomScale, transaction in
@@ -189,7 +207,7 @@ struct EmojiArtDocumentView: View {
                 self.steadyStateZoomScale *= finalGestureScale
             }
     }
-
+    
     
     // MARK: - Zooming emojis
     @GestureState private var gestureEmojiZoomScale: CGFloat = 1.0
@@ -206,7 +224,7 @@ struct EmojiArtDocumentView: View {
                 gestureEmojiZoomScale = latestGestureScale
             }
     }
-
+    
     
     // MARK: - Zoom to Fit (Doouble Tap Gesture)
     
@@ -225,6 +243,37 @@ struct EmojiArtDocumentView: View {
             let vZoom = size.height / image.size.height
             self.steadyStatePanOffset = .zero
             self.steadyStateZoomScale = min(hZoom, vZoom)
+        }
+    }
+    
+    
+    // MARK: - Remove Emoji
+    
+    func deleteSelectedEmojis() {
+        for emoji in selectedEmojis {
+            document.deleteEmoji(emoji)
+        }
+        selectedEmojis.removeAll()
+    }
+    
+    func deleteAllEmoji() {
+        selectedEmojis.removeAll()
+        document.deleteAllEmoji()
+    }
+    
+    var deleteSelectedEmojiButton: some View {
+        Button{
+            deleteSelectedEmojis()
+        } label: { () -> Text in
+            Text("Remove Selected Emoji")
+        }
+    }
+    
+    var deleteAllEmojiButton: some View {
+        Button{
+            deleteAllEmoji()
+        } label: {
+            Text("Remove All")
         }
     }
     
